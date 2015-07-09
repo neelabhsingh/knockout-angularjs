@@ -162,9 +162,7 @@
                 $scope.tasks=response.tasks;
             });
 
-        $scope.beginAdd=function(){
-           $('#add').modal('show');
-        };
+        
         $scope.beginEdit=function(task){
                   
              $scope.title = task.title; 
@@ -175,7 +173,9 @@
            
              $('#edit').modal('show');
         };
-        
+        $scope.beginAdd=function(){
+           $('#add').modal('show');
+        };
         $scope.editTask = function() {             
              alert($scope.uri);
              title=$scope.title;
@@ -197,14 +197,18 @@
              });
              
         };
-        $scope.addTask = function() {
-            //$scope.tasks.push({title :$scope.task1,description: $scope.description1});
+        $scope.addTask = function() {            
 	    var task={ title: $scope.task1, description: $scope.description1};
+            $('#add').modal('hide');
             var uri='http://localhost:5000/todo/api/v1.0/tasks'
             $http.post(uri,task)
-            .success(function(task,status,header){
-                alert("success");
-                $scope.tasks.push(task);
+            .success(function(response){               
+                //alert(response.task.uri);
+                //alert("success");               
+                var  task1={ title: $scope.task1, description: $scope.description1, uri:response.task.uri, done: response.task.done}
+                $scope.tasks.push(task1);
+                $scope.task1='';
+                $scope.description1='';
             })
             .error(function(){
                 alert("Error");
@@ -241,7 +245,7 @@
                  var index=$scope.tasks.indexOf(task);
                  //tasks[i].uri(data.uri);  
                 $scope.tasks.splice(index,1);
-                alert("Success");
+                //alert("Success");
              })
              .error(function(){
                    console.log("error");
@@ -255,4 +259,5 @@
   </body>
 
 </html>
+
 
