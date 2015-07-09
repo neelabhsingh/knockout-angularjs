@@ -1,0 +1,13 @@
+{
+  "friends": [
+    {
+       "FirstName" : "John" , "LastName": "Doe"
+    }, 
+    {
+        "FirstName" : "Ann", "LastName": "Wellington"
+    },
+    {
+       "FirstName": "Sabrina", "LastName": "Burke"
+    }
+  ]
+}

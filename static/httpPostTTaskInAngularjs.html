@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>List of Friends </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+  <script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+  <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" />
+  <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+</head>
+
+<body ng-app="myApp">
+  
+    <div ng-controller="NewTaskCtrl">
+      <div tabindex="-1">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="addDialogLabel">Add Task</h3>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal">
+            <div class="control-group">
+              <label class="control-label" for="inputTask">Task</label>
+              <div class="controls">
+                <input type="text" id="inputTask" ng-model="task1" placeholder="Task title" style="width: 150px;" />
+                <br/>
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label" for="inputDescription">Description</label>
+              <div class="controls">
+                <input type="text" id="inputDescription" ng-model="description1" placeholder="Description" style="width: 300px;" />
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" ng-click="addNewTask()" data-dismiss="modal">Add Task</button>
+          <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+  <script>
+    var app = angular.module("myApp", []);
+    
+    app.controller("NewTaskCtrl", function($scope, $http) {
+      $scope.taskName = null;
+      $scope.addNewTask = function() {
+        $http.post("/todo/api/v1.0/tasks", data).success(function(data, status, headers) {
+          alert("Task added.");
+          $http.get(headers("location")).success(function(data) {
+            $scope.tasks.push(title: $scope.task1, description: $scope.description1);
+            $scope.task1 = '';
+            $scope.description1 = '';
+          });
+        });
+      };
+    });
+
+
+    
+  </script>
+</body>
+
+</html>

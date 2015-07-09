@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>ToDo API Client Demo By Angularjs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" />
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+  </head>
+
+  <body ng-app="myApp" ng-controller="tasksCtrl">
+    <div class="navbar">
+      <div class="navbar-inner">
+        <a class="brand" href="#">ToDo API Client Demo</a>
+      </div>
+    </div>
+    
+    <div>
+      <table class="table table-striped">
+        <tbody>
+          <tr>
+            <td style="width: 1px;"></td>
+            <td>
+              <b>Task</b>
+            </td>
+            <td>
+              <b>Options</b>
+            </td>
+          </tr>
+          <tr ng-repeat="task in tasks">
+            <td>
+              <span ng-show="done" class="label label-success">Done</span>
+              <span ng-hide="done" class="label label-important">In Progress</span>
+            </td>
+            <td>{{task.title}}</td>
+            <td>{{task.description}}</td>
+            <td>
+              <a class="btn" data-toggle="modal" ng-click="beginEdit(task)">Edit</a>
+            </td>
+            <td>
+              <a class="btn" data-toggle="modal" data-ng-click="removeRow(task)">Delete</a>
+            </td>
+            <td ng-show="done">
+              <span>
+                <button ng-click="done = !done" class="btn">Mark In Progress</button>
+              </span>
+            </td>
+            <td ng-hide="done">
+              <span>
+                <button ng-click="done = !done" class="btn">Mark Done</button>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <a class="btn" data-toggle="modal" data-target="#add" ng-click="addTask(task)">Add Task</a>
+    </div>
+
+
+    <!-- Start Edit Modal -->
+    
+    <div id="edit" class="modal hide fade" tabindex="=1" role="dialog" aria-labelledby="editDialogLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="editDialogLabel">Edit Task</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="inputTask">Task</label>
+                    <div class="controls">
+                        <input type="text" ng-model="title" id="inputTask" placeholder="Task title" style="width: 150px;">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputDescription">Description</label>
+                    <div class="controls">
+                        <input type="text" ng-model="description" id="inputDescription" placeholder="Description" style="width: 300px;">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <label class="checkbox">
+                            <input ng-model="done" type="checkbox"> Done
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="editTask($event)" title={{title}} description={{description}} done={{done}} data-dismiss="modal">Update Task</button>           
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        </div>
+    </div>
+    <!-- End Edit Modal -->
+    <div id="add" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addDialogLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="addDialogLabel">Add Task</h3>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+          <div class="control-group">
+            <label class="control-label" for="inputTask">Task</label>
+            <div class="controls">
+              <input type="text" id="inputTask" ng-model="task1" placeholder="Task title" style="width: 150px;" />
+              <br />
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="inputDescription">Description</label>
+            <div class="controls">
+              <input type="text" id="inputDescription" ng-model="description1" placeholder="Description" style="width: 300px;" />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="addNewTask()" data-dismiss="modal">Add Task</button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+      </div>
+    </div>
+    
+    <div id="login" class="modal hide fade" tabindex="=1" role="dialog" aria-labelledby="loginLabel" aria-hidden="true">
+        <div class="modal-header">
+            <h3 id="loginLabel">Sign In</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="inputUsername">Username</label>
+                    <div class="controls">
+                        <input ng-model="username" type="text" id="inputUsername" placeholder="Username">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputPassword">Password</label>
+                    <div class="controls">
+                        <input ng-model="password" type="password" id="inputPassword" placeholder="Password">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button ng-click="login(username, password)" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Sign In</button>
+        </div>
+    </div>
+    <script>
+                   
+    var app = angular.module('myApp', []);
+    app.controller('tasksCtrl', function($scope, $http) {      
+            //$http.get("data.json")
+            $http.get("/todo/api/v1.0/tasks")
+            .success(function(response){
+              
+                $scope.tasks=response.tasks;
+            });
+
+ 
+        $scope.beginEdit=function(task){
+                  
+             $scope.title = task.title; 
+             $scope.description=task.description;
+             $scope.done=task.done;
+             $scope.uri=task.uri;
+             $scope.index=$scope.tasks.indexOf(task);
+           
+             $('#edit').modal('show');
+        };
+        $scope.done = function(task){
+            $http.put(task.uri(),{'done':true})
+            .success(function(result){
+                updateTask(task,result.task);
+              
+            })
+            .error(function(){
+               console.log("error");
+            });            
+        };
+        $scope.editTask = function(obj) {             
+             //alert($scope.title);
+             title=$scope.title;
+             description=$scope.description;
+             done=$scope.done;
+             uri=$scope.uri;
+             $('#edit').modal('hide');
+             
+             var i=$scope.index;
+             var data={title: title, description: description, done: done };
+             //alert("uri"+uri);
+             //alert(data.title);
+             //$scope.tasks[$scope.index] = data;
+             $http.put(uri, data)
+             .success(function(){
+                 //tasks[i].uri(data.uri);  
+                 $scope.tasks[$scope.index] = data;
+                 //alert("Success");
+             });
+             
+        };
+        function edit(data){
+             //alert("dd");
+             //alert("ddg"+data.index);
+             var index=$scope.tasks.indexOf(data.index);
+         
+             //alert("success"+tasks[index].uri(data.uri));
+             $http.put(task.uri(), data)
+             .success(function(){
+                 //alert("success");                 
+                 var index=$scope.tasks.indexOf(data);
+                 //alert("success"+tasks[index].uri(data.uri));
+	         tasks[index].uri(data.uri);
+	         tasks[index].title(data.title);
+	         tasks[index].title(data.description);
+	         tasks[index].done(data.done);
+             })
+             .error(function(){
+                  alert("Error");
+             });
+        };
+        function updateTask(task, newTask){
+             var index=$scope.tasks.indexOf(task);
+             tasks[index].uri(newTask.uri);
+             tasks[index].title(newTask.title);
+             tasks[index].title(newTask.description);
+             tasks[index].done(newTask.done);
+        };        
+        
+       $scope.removeRow=function(task){
+           alert(task.title)
+           var index=$scope.tasks.indexOf(task);
+           $scope.tasks.splice(index,1);
+       };
+        $scope.addNewTask = function() {
+            //$scope.tasks.push({title :$scope.task1,description: $scope.description1});
+	    	
+            $scope.tasks.push({ title: $scope.task1, description: $scope.description1});
+            $scope.task1 = '';
+            $scope.description1 = '';
+            //   $scope.tasks.push('dhsh');
+        };
+    });
+  
+
+        </script>
+  </body>
+
+</html>
+

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html ng-app="app">
+    <head>
+          <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+         <!--our controller-->
+	    <div ng-controller="ItemController">
+		<button id="get-items-button" ng-click="getItems()">Get Items</button>
+		<p>Look at the list of tasks!</p>
+		<!--this table shows the items we get from our service-->
+                
+		<table cellpadding="0" cellspacing="0">
+		    <thead>
+		        <tr>
+		            <th>Description</th>
+		            <th>Done</th>
+		            <th>Title</th>
+		            <th>URI</th>		            
+		        </tr>
+		    </thead>
+		    <tbody>
+		        <!--repeat this table row for each item in items-->
+		        <tr ng-repeat="task in tasks">
+		            <td>{{task.description}}</td>
+		            <td>{{task.done}}</td>
+		            <td>{{task.title}}</td>
+                            <td>{{task.uri}}</td>
+		        </tr>
+		    </tbody>
+		</table>
+	    </div>
+          <script>
+    var app = angular.module('myApp', []);
+    app.controller('customersCtrl', function($scope, $http) {
+        $http.get("/todo/api/v1.0/tasks")
+        .success(function(response) {
+          //console.log(response.tasks[0])
+          $scope.tasks = response.tasks[0];
+        });
+    });
+  </script>
+        <! --
+         <script>
+                  (function () {
+
+            //create our module
+            angular.module('app', [])
+
+                //add controller
+                .controller('ItemController', function ($scope, $http) {
+
+                    //declare an array of items. this will get populated with our ajax call
+                    $scope.tasks = [];
+
+                    //declare an action for our button
+                    $scope.getItems = function () {
+
+                        //perform ajax call.
+                        $http({
+                            url: "/todo/api/v1.0/tasks",
+                            method: "GET"
+                        }).success(function (data, status, headers, config) {
+
+                            //copy the data we get to our items array. we need to use angular.copy so that
+                            //angular can track the object and bind it automatically.
+                            angular.copy(data.tasks, $scope.tasks);
+
+                        }).error(function (data, status, headers, config) {
+                            //something went wrong
+                            alert('Error getting data');
+                        });
+                    }
+
+                });
+                //console.log($scope.tasks);
+        })();
+         </script>
+       -->
+    </body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "tasks": [
+    {
+      "description": "Milk, Cheese, Pizza, Fruit, Tylenol", 
+      "done": false, 
+      "title": "Buy groceries", 
+      "uri": "http://localhost:5000/todo/api/v1.0/tasks/1"
+    }, 
+    {
+      "description": "Need to find a good Python tutorial on the web", 
+      "done": false, 
+      "title": "Learn Python", 
+      "uri": "http://localhost:5000/todo/api/v1.0/tasks/2"
+    }
+  ]
+}

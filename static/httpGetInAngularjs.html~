@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+   <head>
+        <title>List of Friends </title>
+      	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+        <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" />
+        <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+   </head>
+   <body ng-app="step4App">
+        <div ng-controller="FriendsCtrl">
+             <button ng-click="loadFriends()">Load Friends</button>
+             <table>
+                  <thead>
+                     <tr><th>First</th><th>Last</th></tr>
+                  </thead>
+                  <tbody>
+                     <tr ng-repeat="friend in friends">
+                          <td>{{friend.FirstName}}</td>
+                          <td>{{friend.LastName}}</td>
+                     </tr>
+                  </tbody>
+             </table>
+             
+        </div>
+        <script>
+             var app=angular.module("step4App",[]);
+             app.controller("FriendsCtrl", function($scope, $http){
+                 $scope.loadFriends=function(){
+                     $http.get("friendsList.json").success(function(data){
+                          $scope.friends=data.friends;
+                     }).error(function(){
+                          alert("An unexpected error occured!");
+                     });
+                 }
+             });
+        </script>
+   </body>
+</html>
