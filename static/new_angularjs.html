@@ -54,8 +54,8 @@
             </td>
           </tr>
         </tbody>
-      </table>
-      <a class="btn" data-toggle="modal" data-target="#add" ng-click="addTask(task)">Add Task</a>
+      </table>      
+      <button ng-click="beginAdd()" class="btn">Add Task</button>
     </div>
 
 
@@ -95,6 +95,8 @@
         </div>
     </div>
     <!-- End Edit Modal -->
+
+    <!-- Start Add Modal -->
     <div id="add" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addDialogLabel" aria-hidden="true">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -118,11 +120,13 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="addNewTask()" data-dismiss="modal">Add Task</button>
+        <button class="btn btn-primary" ng-click="addTask()" data-dismiss="modal">Add Task</button>
         <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
       </div>
     </div>
-    
+    <!-- End Add Modal -->
+
+
     <div id="login" class="modal hide fade" tabindex="=1" role="dialog" aria-labelledby="loginLabel" aria-hidden="true">
         <div class="modal-header">
             <h3 id="loginLabel">Sign In</h3>
@@ -158,7 +162,9 @@
                 $scope.tasks=response.tasks;
             });
 
- 
+        $scope.beginAdd=function(){
+           $('#add').modal('show');
+        };
         $scope.beginEdit=function(task){
                   
              $scope.title = task.title; 
@@ -171,7 +177,7 @@
         };
         
         $scope.editTask = function() {             
-             //alert($scope.uri);
+             alert($scope.uri);
              title=$scope.title;
              description=$scope.description;
              done=$scope.done;
@@ -191,6 +197,20 @@
              });
              
         };
+        $scope.addTask = function() {
+            //$scope.tasks.push({title :$scope.task1,description: $scope.description1});
+	    var task={ title: $scope.task1, description: $scope.description1};
+            var uri='http://localhost:5000/todo/api/v1.0/tasks'
+            $http.post(uri,task)
+            .success(function(task,status,header){
+                alert("success");
+                $scope.tasks.push(task);
+            })
+            .error(function(){
+                alert("Error");
+            });            
+        };
+
         $scope.done = function(task){
             $http.put(task.uri(),{'done':true})
             .success(function(result){
@@ -227,14 +247,7 @@
                    console.log("error");
              });
        };
-        $scope.addNewTask = function() {
-            //$scope.tasks.push({title :$scope.task1,description: $scope.description1});
-	    	
-            $scope.tasks.push({ title: $scope.task1, description: $scope.description1});
-            $scope.task1 = '';
-            $scope.description1 = '';
-            //   $scope.tasks.push('dhsh');
-        };
+        
     });
   
 
