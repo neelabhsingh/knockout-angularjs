@@ -90,7 +90,7 @@
             </form>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="editTask($event)" title={{title}} description={{description}} done={{done}} data-dismiss="modal">Update Task</button>           
+            <button class="btn btn-primary" ng-click="editTask()" title={{title}} description={{description}} done={{done}} data-dismiss="modal">Update Task</button>           
             <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
         </div>
     </div>
@@ -169,18 +169,9 @@
            
              $('#edit').modal('show');
         };
-        $scope.done = function(task){
-            $http.put(task.uri(),{'done':true})
-            .success(function(result){
-                updateTask(task,result.task);
-              
-            })
-            .error(function(){
-               console.log("error");
-            });            
-        };
-        $scope.editTask = function(obj) {             
-             //alert($scope.title);
+        
+        $scope.editTask = function() {             
+             //alert($scope.uri);
              title=$scope.title;
              description=$scope.description;
              done=$scope.done;
@@ -188,7 +179,7 @@
              $('#edit').modal('hide');
              
              var i=$scope.index;
-             var data={title: title, description: description, done: done };
+             var data={title: title, description: description, done: done};
              //alert("uri"+uri);
              //alert(data.title);
              //$scope.tasks[$scope.index] = data;
@@ -200,26 +191,17 @@
              });
              
         };
-        function edit(data){
-             //alert("dd");
-             //alert("ddg"+data.index);
-             var index=$scope.tasks.indexOf(data.index);
-         
-             //alert("success"+tasks[index].uri(data.uri));
-             $http.put(task.uri(), data)
-             .success(function(){
-                 //alert("success");                 
-                 var index=$scope.tasks.indexOf(data);
-                 //alert("success"+tasks[index].uri(data.uri));
-	         tasks[index].uri(data.uri);
-	         tasks[index].title(data.title);
-	         tasks[index].title(data.description);
-	         tasks[index].done(data.done);
-             })
-             .error(function(){
-                  alert("Error");
-             });
+        $scope.done = function(task){
+            $http.put(task.uri(),{'done':true})
+            .success(function(result){
+                updateTask(task,result.task);
+              
+            })
+            .error(function(){
+               console.log("error");
+            });            
         };
+        
         function updateTask(task, newTask){
              var index=$scope.tasks.indexOf(task);
              tasks[index].uri(newTask.uri);
@@ -229,9 +211,21 @@
         };        
         
        $scope.removeRow=function(task){
-           alert(task.title)
-           var index=$scope.tasks.indexOf(task);
-           $scope.tasks.splice(index,1);
+           //alert(task.title)
+           //alert(task.uri)
+           var uri=task.uri;
+           //alert(uri);
+          
+           $http.delete(uri, task)
+             .success(function(){
+                 var index=$scope.tasks.indexOf(task);
+                 //tasks[i].uri(data.uri);  
+                $scope.tasks.splice(index,1);
+                alert("Success");
+             })
+             .error(function(){
+                   console.log("error");
+             });
        };
         $scope.addNewTask = function() {
             //$scope.tasks.push({title :$scope.task1,description: $scope.description1});
