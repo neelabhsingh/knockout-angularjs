@@ -31,8 +31,8 @@
           </tr>
           <tr ng-repeat="task in tasks">
             <td>
-              <span ng-show="done" class="label label-success">Done</span>
-              <span ng-show="!done" class="label label-important">In Progress</span>
+              <span ng-show="task.done" class="label label-success">Done</span>
+              <span ng-show="!task.done" class="label label-important">In Progress</span>
             </td>
             <td>{{task.title}}</td>
             <td>{{task.description}}</td>
@@ -41,10 +41,10 @@
             
               <a class="btn" data-toggle="modal" data-ng-click="removeRow(task)">Delete</a>
             
-            <span ng-show="done">
+            <span ng-show="task.done">
                    <button ng-click="markInProgress(task)" class="btn">Mark In Progress</button>
             </span>
-            <span ng-show="!done">
+            <span ng-show="!task.done">
                    <button ng-click="markDone(task)" class="btn">Mark Done</button>
             </span>
             </td>
@@ -122,7 +122,7 @@
     </div>
     <!-- End Add Modal -->
 
-
+    <!-- Start Login Modal -->
     <div id="login" class="modal hide fade" tabindex="=1" role="dialog" aria-labelledby="loginLabel" aria-hidden="true">
         <div class="modal-header">
             <h3 id="loginLabel">Sign In</h3>
@@ -147,6 +147,7 @@
             <button ng-click="login(username, password)" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Sign In</button>
         </div>
     </div>
+    <!-- End Login Modal -->
     <script>
                    
     var app = angular.module('myApp', []);
@@ -178,14 +179,13 @@
              $('#edit').modal('hide');
              
              var i=$scope.index;
-             var data={title: title, description: description, done: done};
+             var data={title: title, description: description, done: done, uri: uri};
              //alert("uri"+uri);
              //alert(data.title);
              //$scope.tasks[$scope.index] = data;
              $http.put(uri, data)
-             .success(function(){
-                 //tasks[i].uri(data.uri);  
-                 $scope.tasks[$scope.index] = data;
+             .success(function(){                 
+                 $scope.tasks[$scope.index] = data;    
                  //alert("Success");
              });
              
@@ -208,28 +208,64 @@
             });            
         };
 
+        $scope.markInProgress = function() {             
+             //alert($scope.uri);
+            
+             uri=$scope.uri;
+             
+             
+            
+             //var data={title: title, description: description, done: done, uri: uri};
+             //alert("uri"+uri);
+             //alert(data.title);
+             //$scope.tasks[$scope.index] = data;
+             $http.put(uri, {done: false})
+             .success(function(){                 
+                 //$scope.tasks[$scope.index] = data;                 
+                 $scope.tasks[$scope.index].done = false;
+                 //alert("Success");
+             });
+             
+        };
+        $scope.markDone = function() {             
+             //alert($scope.uri);            
+             uri=$scope.uri;          
+             //var data={title: title, description: description, done: done, uri: uri};
+             //alert("uri"+uri);
+             //alert(data.title);
+             //$scope.tasks[$scope.index] = data;
+             $http.put(uri, {done: true})
+             .success(function(){                 
+                 //$scope.tasks[$scope.index] = data;                 
+                 $scope.tasks[$scope.index].done = true;
+                 //alert("Success");
+             });             
+        };
         $scope.markInProgress=function(task){
-             alert("markInProgress");
-             title=task.title;
-             description=task.description;
+             //alert("markInProgress");
+             //title=task.title;
+             //description=task.description;
              uri=task.uri;
-             var data={title: title, description: description, done: false};
-             $http.put(uri, data)
+             //var data={title: title, description: description, done: false, uri: uri};
+             $http.put(uri, {done: false})
              .success(function(){
-                  alert("success");
-                 $scope.tasks[$scope.index] = data;
+                 //alert("success");
+                 var index = $scope.task.indexOf(task);
+                 $scope.tasks[index].done = false;
              });
         };
         $scope.markDone=function(task){
-             alert("markDone");
+             //alert("markDone");
              title=task.title;
              description=task.description;
              uri=task.uri;
-             var data={title: title, description: description, done: true};
-             $http.put(uri, data)
+             //var data={title: title, description: description, done: true, uri:uri};
+             $http.put(uri, {done: true})
              .success(function(){
-                 alert("success");
-                 $scope.tasks[$scope.index] = data;
+                 //alert("success");      
+                 var index = $scope.task.indexOf(task);
+                 $scope.tasks[index].done = true;
+                 //$scope.tasks[$scope.index].done = true;
              });
         };       
         
